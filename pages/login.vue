@@ -8,22 +8,26 @@
       v-model="name"
       :counter="10"
       :rules="nameRules"
-      label="Name"
+      label="Nom"
       required
     />
 
     <v-text-field
       v-model="password"
+      :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
       :counter="15"
       :rules="passwordRules"
-      label="Password"
+      :type="show1 ? 'text' : 'password'"
+      label="Mot de passe"
+      hint="15 lettres maximum"
       required
+      @click:append="show1 = !show1"
     />
 
     <v-checkbox
       v-model="checkbox"
-      :rules="[v => !!v || 'You must agree to continue!']"
-      label="Do you agree?"
+      :rules="[v => !!v || 'Vous devez accepter pour pouvoir continuer !']"
+      label="Confirmation ?"
       required
     />
 
@@ -33,7 +37,7 @@
       class="mr-4"
       @click="validate"
     >
-      Validate
+      Valider
     </v-btn>
 
     <v-btn
@@ -41,7 +45,7 @@
       class="mr-4"
       @click="reset"
     >
-      Reset Form
+      Effacer
     </v-btn>
 
     <v-btn
@@ -60,12 +64,12 @@
       name: '',
       nameRules: [
         v => !!v || 'Name is required',
-        v => (v && v.length <= 10) || 'Name must be less than 10 characters',
+        v => (v && v.length <= 10) || 'Moins de 10 caractères',
       ],
       password: '',
       passwordRules: [
-        v => !!v || 'Password is required',
-        v => (v && v.length <= 15) || 'Password must be less than 15 characters',
+        v => !!v || 'Mot de passe obligatoire',
+        v => (v && v.length <= 15) || 'Moins de 15 caractères',
       ],
       checkbox: false,
     }),
