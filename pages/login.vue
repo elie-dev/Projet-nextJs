@@ -54,10 +54,12 @@
 
 <script>
 
-  import NxLocalForage from 'vue-localstorage';
-  import Vue from 'vue';
+  import { ACTIONS } from '~/store/users'
+  import VueCookies from 'vue-cookie'
+  import Vue from 'vue'
 
   export default {
+    middleware: 'guest',
 
     data: () => ({
       valid: true,
@@ -77,22 +79,18 @@
     methods: {
       validate () {
         if(this.$refs.form.validate()) {
-          Vue.use(NxLocalForage, {
-            name: 'ls',
-            bind: true //created computed members from your variable declarations
-          })
+          Vue.use(VueCookies)
 
           // Get data from localStorage
-          let data = Vue.ls.get('users')
-          if (data === null) {
-            data = {}
-            Vue.ls.set('users', JSON.stringify(data))
-          } else {
-            data = JSON.parse(data)
-          }
-
-          if(data[this.email] !== undefined && data[this.email].password === this.password) {
-            console.log('oui')
+          const data = this.$store.state.users.users
+          const userBdd = data.find(element => element.email === this.email)
+          if(userBdd !== undefined && userBdd.password === this.password) {
+            const user = {
+              name: userBdd.name,
+              email: this.email,
+            }
+            this.$cookie.set('auth',JSON.stringify(user));
+            console.log(this.$cookie.get('auth'))
           } else {
             console.log('non')
           }

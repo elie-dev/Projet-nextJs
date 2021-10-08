@@ -66,12 +66,13 @@
 </template>
 
 <script>
-  import NxLocalForage from 'vue-localstorage';
-  import Vue from 'vue';
+  import { ACTIONS } from '~/store/users'
 
   export default {
 
-    data () {
+    middleware: 'guest',
+
+    data() {
       return {
         valid: true,
         name: '',
@@ -102,28 +103,16 @@
       validate () {
         if(this.$refs.form.validate()) {
 
-          Vue.use(NxLocalForage, {
-            name: 'ls',
-            bind: true //created computed members from your variable declarations
-          })
-
-          // Get data from localStorage
-          let data = Vue.ls.get('users')
-          if (data === null) {
-            data = {}
-            Vue.ls.set('users', JSON.stringify(data))
-          } else {
-            data = JSON.parse(data)
-          }
+          console.log(this.$store.state.users.users)
 
           // Check if email is use by another account
-          if(data[this.email] === undefined) {
-            data[this.email] = {
+          if(this.$store.state[this.email] === undefined) {
+            this.$store.dispatch(ACTIONS.ADD_USER_METHOD, {
               name: this.name,
+              email: this.email,
               password: this.password
-            }
-            Vue.ls.set('users', JSON.stringify(data))
-            console.log('ok')
+            })
+            this.$router.push('/login')
           } else {
             // email deja utiliser
             // TO DO: renvoyer une erreur
