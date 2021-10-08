@@ -66,8 +66,6 @@
 </template>
 
 <script>
-  import NxLocalForage from 'vue-localstorage';
-  import Vue from 'vue';
 
   export default {
 

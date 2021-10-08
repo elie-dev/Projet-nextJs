@@ -16,21 +16,18 @@
 </template>
 
 <script>
+
   export default {
     data () {
       return {
         coordonnees: [
           {
             designation: 'Nom :',
-            userInput: 'NOTT',
-          },
-          {
-            designation: 'Prénom :',
-            userInput: 'Morgan',
+            userInput: '',
           },
           {
             designation: 'E-mail :',
-            userInput: 'pouetpouet@pouet.fr',
+            userInput: '',
           },
           {
             designation: 'Mot de passe :',
