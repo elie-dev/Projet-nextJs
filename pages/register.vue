@@ -67,6 +67,13 @@
 
 <script>
   import { ACTIONS } from '~/store/users'
+  import NxLocalForage from 'vue-localstorage';
+  import Vue from 'vue';
+
+  Vue.use(NxLocalForage, {
+    name: 'ls',
+    bind: true //created computed members from your variable declarations
+  })
 
   export default {
 
@@ -102,18 +109,33 @@
     methods: {
       validate () {
         if(this.$refs.form.validate()) {
+          //Vue.ls.remove('users')
+          let data = Vue.ls.get('users')
+          if (data === null) {
+            data = []
+          } else {
+            data = JSON.parse(data)
+            if (this.$store.state.users.users === []) {
+              data.forEach(user => {
+                this.$store.dispatch(ACTIONS.ADD_USER_METHOD, user)
+              });
+            }
+          }
 
           console.log(this.$store.state)
-
           // Check if email is use by another account
           if(this.$store.state[this.email] === undefined) {
             console.log(this.$store.state.users)
-            this.$store.dispatch(ACTIONS.ADD_USER_METHOD, {
+            const newUsers = {
               name: this.name,
               email: this.email,
               password: this.password
-            })
+            }
+            this.$store.dispatch(ACTIONS.ADD_USER_METHOD, newUsers)
+            data.push(newUsers)
+            Vue.ls.set('users', JSON.stringify(data))
             this.$router.push('/login')
+            console.log(Vue.ls.get('users'))
           } else {
             // email deja utiliser
             // TO DO: renvoyer une erreur

@@ -47,9 +47,15 @@
 
 <script>
 
-  import { ACTIONS } from '~/store/user'
+  import { ACTIONS } from '~/store/users'
   import VueCookies from 'vue-cookie'
   import Vue from 'vue'
+  import NxLocalForage from 'vue-localstorage';
+
+  Vue.use(NxLocalForage, {
+    name: 'ls',
+    bind: true //created computed members from your variable declarations
+  })
 
   export default {
     middleware: 'auth',
@@ -75,18 +81,31 @@
         if(this.$refs.form.validate()) {
           Vue.use(VueCookies)
 
+          let dataBdd = Vue.ls.get('users')
+          if (dataBdd === null) {
+            dataBdd = []
+          } else {
+            dataBdd = JSON.parse(dataBdd)
+            console.log(this.$store.state.users.users)
+            if (this.$store.state.users.users.length === 0) {
+              dataBdd.forEach(user => {
+                this.$store.dispatch(ACTIONS.ADD_USER_METHOD, user)
+              });
+              console.log(this.$store.state.users.users)
+            }
+          }
           // Get data from localStorage
           const data = this.$store.state.users.users
           const userBdd = data.find(element => element.email === this.email)
           if(userBdd !== undefined && userBdd.password === this.password) {
             this.$store.dispatch(ACTIONS.LOGIN_METHOD, true)
-            console.log(this.$store.state.user.isLoged)
             const user = {
               name: userBdd.name,
               email: this.email,
             }
             this.$cookie.set('auth',JSON.stringify(user));
-            //console.log(this.$cookie.get('auth'))
+            this.$router.push('/dashboard')
+            
           } else {
             console.log('non')
           }

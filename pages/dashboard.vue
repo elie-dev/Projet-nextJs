@@ -5,17 +5,9 @@
 
     <div class="mt-4">
       <v-btn
-        color="warning"
-        class="mr-6"
-        @click="reset"
-      >
-        Modifier les informations
-      </v-btn>
-
-      <v-btn
         color="error"
         class=""
-        @click="reset"
+        @click="deleteAccount"
       >
         Effacer le compte
       </v-btn>
@@ -24,8 +16,27 @@
 </template>
 
 <script>
-  export default {
-    middleware: "auth",
-  }
+
+    import Vue from "vue";
+    import VueCookies from "vue-cookie";
+    import { ACTIONS } from '~/store/users'
+
+    export default {
+        middleware: "auth",
+        
+
+        methods: {
+            deleteAccount() {
+                console.log('test')
+                Vue.use(VueCookies)
+                const user = JSON.parse(this.$cookie.get('auth'))
+                this.$store.dispatch(ACTIONS.DELETE_USER_METHOD, user.email)
+                this.$cookie.set('auth', '')
+                this.$router.push('/login')
+                this.$store.dispatch(ACTIONS.LOOUT_METHOD, true)
+                console.log(this.$store.state.users.users)
+            }
+        }
+    }
 
 </script>
