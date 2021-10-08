@@ -5,10 +5,9 @@
     lazy-validation
   >
     <v-text-field
-      v-model="name"
-      :counter="10"
-      :rules="nameRules"
-      label="Nom"
+      v-model="email"
+      :rules="emailRules"
+      label="E-mail"
       required
     />
 
@@ -47,14 +46,19 @@
 </template>
 
 <script>
+
+  import NxLocalForage from 'vue-localstorage';
+  import Vue from 'vue';
+
   export default {
+
     data: () => ({
       show1: true,
       valid: true,
-      name: '',
-      nameRules: [
-        v => !!v || 'Name is required',
-        v => (v && v.length <= 10) || 'Moins de 10 caractères',
+      email: '',
+      emailRules: [
+        v => !!v || 'E-mail is required',
+        v => /.+@.+\..+/.test(v) || 'E-mail must be valid',
       ],
       password: '',
       passwordRules: [
@@ -66,7 +70,27 @@
 
     methods: {
       validate () {
-        this.$refs.form.validate()
+        if(this.$refs.form.validate()) {
+          Vue.use(NxLocalForage, {
+            name: 'ls',
+            bind: true //created computed members from your variable declarations
+          })
+
+          // Get data from localStorage
+          let data = Vue.ls.get('users')
+          if (data === null) {
+            data = {}
+            Vue.ls.set('users', JSON.stringify(data))
+          } else {
+            data = JSON.parse(data)
+          }
+
+          if(data[this.email] !== undefined && data[this.email].password === this.password) {
+            console.log('oui')
+          } else {
+            console.log('non')
+          }
+        }
       },
       reset () {
         this.$refs.form.reset()

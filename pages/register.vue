@@ -66,35 +66,69 @@
 </template>
 
 <script>
+  import NxLocalForage from 'vue-localstorage';
+  import Vue from 'vue';
+
   export default {
-    data: () => ({
-      valid: true,
-      name: '',
-      nameRules: [
-        v => !!v || 'Name is required',
-        v => (v && v.length <= 10) || 'Name must be less than 10 characters',
-      ],
-      email: '',
-      emailRules: [
-        v => !!v || 'E-mail is required',
-        v => /.+@.+\..+/.test(v) || 'E-mail must be valid',
-      ],
-      password: '',
-      passwordRules: [
-        v => !!v || 'Password is required',
-        v => (v && v.length <= 15) || 'Password must be less than 15 characters',
-      ],
-      confirmPassword: '',
-      confirmPasswordRules: [
-        v => !!v || 'Confirm Password is required',
-        v => (v === this.password) || 'Passwords must be identical',
-      ],
-      checkbox: false,
-    }),
+
+    data () {
+      return {
+        valid: true,
+        name: '',
+        nameRules: [
+          v => !!v || 'Name is required',
+          v => (v && v.length <= 10) || 'Name must be less than 10 characters',
+        ],
+        email: '',
+        emailRules: [
+          v => !!v || 'E-mail is required',
+          v => /.+@.+\..+/.test(v) || 'E-mail must be valid',
+        ],
+        password: '',
+        passwordRules: [
+          v => !!v || 'Password is required',
+          v => (v && v.length <= 15) || 'Password must be less than 15 characters',
+        ],
+        confirmPassword: '',
+        confirmPasswordRules: [
+          v => !!v || 'type confirm password',
+          v => v === this.password || 'The password confirmation does not match.',
+        ],
+        checkbox: false,
+      }
+    },
 
     methods: {
       validate () {
-        this.$refs.form.validate()
+        if(this.$refs.form.validate()) {
+
+          Vue.use(NxLocalForage, {
+            name: 'ls',
+            bind: true //created computed members from your variable declarations
+          })
+
+          // Get data from localStorage
+          let data = Vue.ls.get('users')
+          if (data === null) {
+            data = {}
+            Vue.ls.set('users', JSON.stringify(data))
+          } else {
+            data = JSON.parse(data)
+          }
+
+          // Check if email is use by another account
+          if(data[this.email] === undefined) {
+            data[this.email] = {
+              name: this.name,
+              password: this.password
+            }
+            Vue.ls.set('users', JSON.stringify(data))
+            console.log('ok')
+          } else {
+            // email deja utiliser
+            // TO DO: renvoyer une erreur
+          }
+        }
       },
       reset () {
         this.$refs.form.reset()
