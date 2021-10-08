@@ -17,6 +17,9 @@
 
 <script>
 
+  import Vue from "vue";
+  import VueCookies from "vue-cookie";
+
   export default {
     data () {
       return {
@@ -31,11 +34,18 @@
           },
           {
             designation: 'Mot de passe :',
-            userInput: '',
+            userInput: '**********',
           },
         ],
       }
     },
+    mounted () {
+      Vue.use(VueCookies)
+      console.log(this.$cookie.get('auth'))
+      const data = JSON.parse(this.$cookie.get('auth'))
+      this.coordonnees[1].userInput = data.email
+      this.coordonnees[0].userInput = data.name
+    }
   }
 </script>
 
