@@ -24,42 +24,32 @@
       @click:append="show1 = !show1"
     />
 
-    <v-checkbox
-      v-model="checkbox"
-      :rules="[v => !!v || 'Vous devez accepter pour pouvoir continuer !']"
-      label="Confirmation ?"
-      required
-    />
+    <div class="mt-4 ml-8">
+      <v-btn
+        :disabled="!valid"
+        color="success"
+        class="mr-4"
+        @click="validate"
+      >
+        Valider
+      </v-btn>
 
-    <v-btn
-      :disabled="!valid"
-      color="success"
-      class="mr-4"
-      @click="validate"
-    >
-      Valider
-    </v-btn>
+      <v-btn
+        color="error"
+        class="mr-4"
+        @click="reset"
+      >
+        Effacer
+      </v-btn>
+    </div>
 
-    <v-btn
-      color="error"
-      class="mr-4"
-      @click="reset"
-    >
-      Effacer
-    </v-btn>
-
-    <v-btn
-      color="warning"
-      @click="resetValidation"
-    >
-      Reset Validation
-    </v-btn>
   </v-form>
 </template>
 
 <script>
   export default {
     data: () => ({
+      show1: true,
       valid: true,
       name: '',
       nameRules: [
