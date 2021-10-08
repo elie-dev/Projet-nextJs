@@ -13,42 +13,35 @@
 
     <v-text-field
       v-model="password"
+      :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
       :counter="15"
       :rules="passwordRules"
-      label="Password"
+      :type="show1 ? 'text' : 'password'"
+      label="Mot de passe"
+      hint="15 lettres maximum"
       required
+      @click:append="show1 = !show1"
     />
 
-    <v-checkbox
-      v-model="checkbox"
-      :rules="[v => !!v || 'You must agree to continue!']"
-      label="Do you agree?"
-      required
-    />
+    <div class="mt-4 ml-8">
+      <v-btn
+        :disabled="!valid"
+        color="success"
+        class="mr-4"
+        @click="validate"
+      >
+        Valider
+      </v-btn>
 
-    <v-btn
-      :disabled="!valid"
-      color="success"
-      class="mr-4"
-      @click="validate"
-    >
-      Validate
-    </v-btn>
+      <v-btn
+        color="error"
+        class="mr-4"
+        @click="reset"
+      >
+        Effacer
+      </v-btn>
+    </div>
 
-    <v-btn
-      color="error"
-      class="mr-4"
-      @click="reset"
-    >
-      Reset Form
-    </v-btn>
-
-    <v-btn
-      color="warning"
-      @click="resetValidation"
-    >
-      Reset Validation
-    </v-btn>
   </v-form>
 </template>
 
@@ -60,6 +53,7 @@
   export default {
 
     data: () => ({
+      show1: true,
       valid: true,
       email: '',
       emailRules: [
@@ -68,8 +62,8 @@
       ],
       password: '',
       passwordRules: [
-        v => !!v || 'Password is required',
-        v => (v && v.length <= 15) || 'Password must be less than 15 characters',
+        v => !!v || 'Mot de passe obligatoire',
+        v => (v && v.length <= 15) || 'Moins de 15 caractères',
       ],
       checkbox: false,
     }),
