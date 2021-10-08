@@ -70,7 +70,7 @@
 
   export default {
 
-    middleware: 'guest',
+    middleware: 'auth',
 
     data() {
       return {
@@ -103,10 +103,11 @@
       validate () {
         if(this.$refs.form.validate()) {
 
-          console.log(this.$store.state.users.users)
+          console.log(this.$store.state)
 
           // Check if email is use by another account
           if(this.$store.state[this.email] === undefined) {
+            console.log(this.$store.state.users)
             this.$store.dispatch(ACTIONS.ADD_USER_METHOD, {
               name: this.name,
               email: this.email,

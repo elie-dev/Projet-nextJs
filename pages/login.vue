@@ -54,12 +54,12 @@
 
 <script>
 
-  import { ACTIONS } from '~/store/users'
+  import { ACTIONS } from '~/store/user'
   import VueCookies from 'vue-cookie'
   import Vue from 'vue'
 
   export default {
-    middleware: 'guest',
+    middleware: 'auth',
 
     data: () => ({
       valid: true,
@@ -85,12 +85,14 @@
           const data = this.$store.state.users.users
           const userBdd = data.find(element => element.email === this.email)
           if(userBdd !== undefined && userBdd.password === this.password) {
+            this.$store.dispatch(ACTIONS.LOGIN_METHOD, true)
+            console.log(this.$store.state.user.isLoged)
             const user = {
               name: userBdd.name,
               email: this.email,
             }
             this.$cookie.set('auth',JSON.stringify(user));
-            console.log(this.$cookie.get('auth'))
+            //console.log(this.$cookie.get('auth'))
           } else {
             console.log('non')
           }
